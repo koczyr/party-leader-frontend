@@ -1,25 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css"
+import React, { useState } from 'react'
+import axios from 'axios'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+export default function LeaderList(){
+    const [leaders, setLeaders] =  useState([])
+
+    const fetchLeaders = ()=>{
+       axios.get(`http://localhost:3000/api/v1/leaders`)
+      .then(response => {
+        const leaders = response.data
+        setLeaders(leaders)
+      })      
+     
+    }
+
+    return (
+        <div>
+          <h1>Leader List</h1>
+          <p><button onClick={fetchLeaders}>Fetch leaders</button></p>
+          <ul>
+          {
+            leaders
+              .map(leader =>
+                <li key={leader.id}>{leader.name}&nbsp;{leader.style}</li>
+              )
+          }
+          </ul>
+        </div>
+    )
 }
-
-export default App;
