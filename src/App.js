@@ -1,32 +1,33 @@
-import "./App.css"
-import React, { useState } from 'react'
-import axios from 'axios'
+import "./App.css";
+import axios from "axios";
+import Leaders from "./components/leaders";
+import { useEffect, useState } from "react";
 
+const API_URL = "http://localhost:3000/api/v1/leaders";
 
-export default function LeaderList(){
-    const [leaders, setLeaders] =  useState([])
-
-    const fetchLeaders = ()=>{
-       axios.get(`http://localhost:3000/api/v1/leaders`)
-      .then(response => {
-        const leaders = response.data
-        setLeaders(leaders)
-      })      
-     
-    }
-
-    return (
-        <div>
-          <h1>Leader List</h1>
-          <p><button onClick={fetchLeaders}>Fetch leaders</button></p>
-          <ul>
-          {
-            leaders
-              .map(leader =>
-                <li key={leader.id}>{leader.name}&nbsp;{leader.style}</li>
-              )
-          }
-          </ul>
-        </div>
-    )
+function getAPIData() {
+  return axios.get(API_URL).then((response) => response.data);
 }
+
+function App() {
+  const [leaders, setLeaders] = useState([]);
+
+  useEffect(() => {
+    let mounted = true;
+    getAPIData().then((items) => {
+      if (mounted) {
+        setLeaders(items);
+      }
+    });
+    return () => (mounted = false);
+  }, []);
+
+  return (
+    <div className="App">
+      <h1>Hello</h1>
+      <Leaders leaders={leaders} />
+    </div>
+  );
+}
+
+export default App;
